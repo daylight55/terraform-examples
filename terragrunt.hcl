@@ -61,3 +61,15 @@ data "terraform_remote_state" "gke" {
 }
 EOF
 }
+
+generate "locals" {
+  path      = "_locals.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = <<EOF
+locals {
+  project        = "${local.project}"
+  region         = "${local.region}"
+  tfstate_bucket = "${local.tfstate_bucket}"
+}
+EOF
+}

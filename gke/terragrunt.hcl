@@ -5,5 +5,6 @@ include "root" {
 dependencies {
   paths = [
     "../vpc",
+    "../enable-services",
   ]
 }

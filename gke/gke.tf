@@ -1,8 +1,9 @@
 resource "google_container_cluster" "autopilot_cluster" {
   name     = "autopilot-cluster"
-  location = "us-central1"
+  location = local.region
 
-  enable_autopilot = true
+  enable_autopilot    = true
+  deletion_protection = false # 実験用のため
 
   network    = data.terraform_remote_state.vpc.outputs.network_name
   subnetwork = data.terraform_remote_state.vpc.outputs.subnetwork_name
@@ -11,12 +12,4 @@ resource "google_container_cluster" "autopilot_cluster" {
     cluster_secondary_range_name  = "pods"
     services_secondary_range_name = "services"
   }
-
-  depends_on = [
-    google_project_service.container
-  ]
-}
-
-resource "google_project_service" "container" {
-  service = "container.googleapis.com"
 }
