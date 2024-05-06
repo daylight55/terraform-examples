@@ -1,0 +1,3 @@
+project        = "xxx"
+region         = "us-west1"
+tfstate_bucket = "xxx"

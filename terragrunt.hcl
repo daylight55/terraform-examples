@@ -1,14 +1,12 @@
 locals {
-  project        = "daylight-labo"
-  region         = "us-west1"
-  tfstate_bucket = "daylight55-terraform-state-1vuxq5bs"
+  inputs = jsondecode(read_tfvars_file("${get_path_to_repo_root()}/terraform.tfvars"))
 }
 
 remote_state {
   backend = "gcs"
   config = {
-    project = local.project
-    bucket  = local.tfstate_bucket
+    project = local.inputs.project
+    bucket  = local.inputs.tfstate_bucket
     prefix  = "${path_relative_to_include()}/terraform.tfstate"
   }
 
@@ -33,7 +31,7 @@ terraform {
 }
 
 provider "google" {
-  region                                        = "${local.region}"
+  region                                        = "${local.inputs.region}"
   add_terraform_attribution_label               = true
   terraform_attribution_label_addition_strategy = "PROACTIVE"
 }
@@ -47,7 +45,7 @@ generate "remote_state" {
 data "terraform_remote_state" "vpc" {
   backend = "gcs"
   config = {
-    bucket  = "${local.tfstate_bucket}"
+    bucket  = "${local.inputs.tfstate_bucket}"
     prefix  = "vpc/terraform.tfstate"
   }
 }
@@ -55,7 +53,7 @@ data "terraform_remote_state" "vpc" {
 data "terraform_remote_state" "gke" {
   backend = "gcs"
   config = {
-    bucket  = "${local.tfstate_bucket}"
+    bucket  = "${local.inputs.tfstate_bucket}"
     prefix  = "gke/terraform.tfstate"
   }
 }
@@ -67,9 +65,9 @@ generate "locals" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 locals {
-  project        = "${local.project}"
-  region         = "${local.region}"
-  tfstate_bucket = "${local.tfstate_bucket}"
+  project        = "${local.inputs.project}"
+  region         = "${local.inputs.region}"
+  tfstate_bucket = "${local.inputs.tfstate_bucket}"
 }
 EOF
 }
