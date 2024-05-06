@@ -1,0 +1,18 @@
+version: '3'
+
+tasks:
+  init:
+    cmds:
+      - terragrunt run-all init
+
+  plan:
+    cmds:
+      - terragrunt run-all plan
+
+  apply:
+    cmds:
+      - terragrunt run-all apply
+
+  destroy:
+    cmds:
+      - terragrunt run-all destroy
